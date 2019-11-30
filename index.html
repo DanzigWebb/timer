@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="timer">
+    <span class="t-hour num"></span>
+    <span class="t-min num"></span>
+    <span class="t-sec num"></span>
+  </div>
+  <div class="timer2"></div>
+  <style>
+    .timer {
+      display: flex;
+      justify-content: space-around;
+      font-family: sans-serif;
+      font-size: 44px;
+      padding: 40px 20px;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    .num span {
+      width: 30px;
+      background: #444;
+      margin: 0 2px;
+      padding: 5px;
+      border-radius: 5px;
+      font-weight: bold;
+      color: #fff;
+    }
+  </style>
+
+  <script>
+    // timer
+    class minTimer {
+      constructor(options) {
+        this.hour = document.querySelectorAll(`.${options.hour}`);
+        this.min = document.querySelectorAll(`.${options.min}`);
+        this.sec = document.querySelectorAll(`.${options.sec}`);
+        this.separation = options.separation
+      }
+      start() {
+        // время таймера
+        let timerPar = {
+          hour: 14,
+          min: 45,
+          sec: 4,
+        }
+        const update = () => {
+          let date = new Date
+          let tz = date.getTimezoneOffset()
+          let now = Math.floor(date / 1000 - tz * 60)
+          let next = Math.ceil((date / 1000 / 60 - tz) / 60 / 24) * 60 * 60 * 24
+          let left = next - now;
+
+          let hourString = ("0" + ~~(left / 60 / 60)).slice(-2)
+          let minString = ("0" + ~~(left / 60 % 60)).slice(-2)
+          let secString = ("0" + ~~(left % 60)).slice(-2)
+          // каждая цифра в отдельном элементе
+          const separation = () => {
+            for (let i = 0; i < this.min.length; i++) {
+              this.hour[i].innerHTML = `<span>${hourString[0]}</span><span>${hourString[1]}</span>`
+              this.min[i].innerHTML = `<span>${minString[0]}</span><span>${minString[1]}</span>`
+              this.sec[i].innerHTML = `<span>${secString[0]}</span><span>${secString[1]}</span>`
+            }
+          }
+          // цифры вместе
+          const together = () => {
+            for (let i = 0; i < this.min.length; i++) {
+              this.hour[i].innerHTML = hourString
+              this.min[i].innerHTML = minString
+              this.sec[i].innerHTML = secString
+            }
+          }
+
+          this.separation ? separation() : together()
+        }
+
+        setInterval(() => {
+          update()
+        }, 1000);
+      }
+    }
+    // инициализация
+    const timer = new minTimer({
+      hour: 't-hour',
+      min: 't-min',
+      sec: 't-sec',
+      separation: true
+    }).start();
+  </script>
+
+</body>
+
+</html>
